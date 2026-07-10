@@ -130,6 +130,15 @@ public sealed class ScanCoordinator
         _card.Activate();
 
         var hwnd = new WindowInteropHelper(_card).Handle;
+
+        // The share host (IDataTransferManagerInterop.GetForWindow) returns S_FALSE + null for tool
+        // windows — which the card is, because ShowInTaskbar=False sets WS_EX_TOOLWINDOW. Promote it
+        // to a normal app window (in place, no handle recreation) so the share sheet will attach.
+        var exStyle = Interop.NativeMethods.GetWindowLongPtr(hwnd, Interop.NativeMethods.GWL_EXSTYLE).ToInt64();
+        var promoted = (exStyle & ~Interop.NativeMethods.WS_EX_TOOLWINDOW) | Interop.NativeMethods.WS_EX_APPWINDOW;
+        Interop.NativeMethods.SetWindowLongPtr(hwnd, Interop.NativeMethods.GWL_EXSTYLE, new IntPtr(promoted));
+        Diagnostics.Log($"Share: card exstyle 0x{exStyle:X} -> 0x{promoted:X}");
+
         Interop.NativeMethods.SetForegroundWindow(hwnd);
 
         try

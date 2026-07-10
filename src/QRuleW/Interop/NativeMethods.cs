@@ -74,6 +74,18 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+    // ---- Window extended styles (make the result card shareable) ----
+    public const int GWL_EXSTYLE = -20;
+    public const long WS_EX_TOOLWINDOW = 0x00000080;
+    public const long WS_EX_APPWINDOW = 0x00040000;
+    public const long WS_EX_LAYERED = 0x00080000;
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
+    public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+    public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
     // ---- App packaging detection (StartupTask vs Run key) ----
     public const int APPMODEL_ERROR_NO_PACKAGE = 15700;
 
