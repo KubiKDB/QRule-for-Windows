@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve"><value>QRule W</value></data>
+  <data name="TrayScan" xml:space="preserve"><value>Scan QR Code</value></data>
+  <data name="TrayChangeShortcut" xml:space="preserve"><value>Change Shortcut…</value></data>
+  <data name="TrayLaunchAtStartup" xml:space="preserve"><value>Launch at Startup</value></data>
+  <data name="TrayAbout" xml:space="preserve"><value>About QRule W</value></data>
+  <data name="TrayQuit" xml:space="preserve"><value>Quit QRule W</value></data>
+  <data name="Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Copied" xml:space="preserve"><value>Copied</value></data>
+  <data name="Share" xml:space="preserve"><value>Share</value></data>
+  <data name="Close" xml:space="preserve"><value>Close</value></data>
+  <data name="NoQrFound" xml:space="preserve"><value>No QR code found</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Press the shortcut, then drag a box around any QR code on your screen.</value></data>
+  <data name="RecorderWindowTitle" xml:space="preserve"><value>Change Shortcut</value></data>
+  <data name="RecorderCurrent" xml:space="preserve"><value>Current shortcut:</value></data>
+  <data name="RecorderPrompt" xml:space="preserve"><value>Press shortcut…</value></data>
+  <data name="RecorderRecord" xml:space="preserve"><value>Record Shortcut</value></data>
+  <data name="RecorderSave" xml:space="preserve"><value>Save</value></data>
+  <data name="RecorderCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ShortcutInUse" xml:space="preserve"><value>That shortcut is already in use by another app. Try another.</value></data>
+  <data name="HotkeyFailedTitle" xml:space="preserve"><value>Shortcut unavailable</value></data>
+  <data name="HotkeyFailedBody" xml:space="preserve"><value>Couldn't register {0}. Choose another shortcut.</value></data>
+  <data name="AboutBody" xml:space="preserve"><value>QRule W {0}
+
+Select any QR code on your screen and QRule reads it — locally. Nothing is saved or sent anywhere.
+
+Shortcut: {1}
+
+Copyright © 2026 Daniel Bond.</value></data>
+</root>

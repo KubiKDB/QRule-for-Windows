@@ -1,0 +1,46 @@
+<Window x:Class="QRuleW.Overlay.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        AllowsTransparency="False"
+        Background="Black"
+        Cursor="Cross"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True"
+        Focusable="True"
+        WindowStartupLocation="Manual">
+    <Grid>
+        <!-- Frozen screenshot, stretched to fill the monitor. -->
+        <Image x:Name="Screenshot" Stretch="Fill" />
+
+        <!-- 35% dim with the selection rectangle punched out. -->
+        <Path x:Name="DimPath" Fill="#59000000" IsHitTestVisible="False" />
+
+        <!-- Selection border + size badge live on a canvas in DIP space. -->
+        <Canvas x:Name="Layer" IsHitTestVisible="False">
+            <Rectangle x:Name="SelectionBorder"
+                       Stroke="#E6FFFFFF" StrokeThickness="1"
+                       Visibility="Collapsed"
+                       SnapsToDevicePixels="True" />
+            <Border x:Name="BadgeBorder"
+                    Background="#A6000000" CornerRadius="4"
+                    Padding="6,3" Visibility="Collapsed">
+                <TextBlock x:Name="BadgeText"
+                           Foreground="White" FontSize="12"
+                           FontFamily="Consolas, Cascadia Mono, Consolas"/>
+            </Border>
+        </Canvas>
+
+        <!-- "No QR code found" toast. -->
+        <Border x:Name="Toast"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Background="#B3000000" CornerRadius="10"
+                Padding="18,10" Visibility="Collapsed"
+                IsHitTestVisible="False">
+            <TextBlock x:Name="ToastText" Foreground="White" FontSize="15" FontWeight="Medium"/>
+        </Border>
+    </Grid>
+</Window>

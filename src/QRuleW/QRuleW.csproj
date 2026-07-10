@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>QRuleW</RootNamespace>
+    <AssemblyName>QRuleW</AssemblyName>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\qrule.ico</ApplicationIcon>
+    <Product>QRule W</Product>
+    <AssemblyTitle>QRule W</AssemblyTitle>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Daniel Bond</Company>
+    <Copyright>Copyright © 2026 Daniel Bond. All rights reserved.</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QRuleW.Core\QRuleW.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Also embed the icon as a WPF resource so the tray can load it via pack URI. -->
+    <Resource Include="Assets\qrule.ico" />
+  </ItemGroup>
+
+</Project>

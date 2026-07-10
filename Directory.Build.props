@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <!-- Allows the WPF / net8.0-windows project to compile on macOS/Linux (cross-OS build gate). -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
