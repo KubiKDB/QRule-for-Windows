@@ -1,6 +1,8 @@
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using H.NotifyIcon;
 using QRuleW.Coordination;
@@ -29,36 +31,106 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Single instance — a second launch just exits.
-        _singleInstance = new Mutex(initiallyOwned: true, MutexName, out var isNew);
-        if (!isNew)
+        // Any unhandled exception (startup or later) is logged rather than silently killing the app.
+        DispatcherUnhandledException += (_, args) =>
         {
-            Shutdown();
-            return;
+            LogCrash("Dispatcher", args.Exception);
+            args.Handled = true;
+        };
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            LogCrash("AppDomain", args.ExceptionObject as Exception);
+
+        try
+        {
+            // Single instance — a second launch just exits.
+            _singleInstance = new Mutex(initiallyOwned: true, MutexName, out var isNew);
+            if (!isNew)
+            {
+                Shutdown();
+                return;
+            }
+
+            _settings = new SettingsStore();
+            _startup = new StartupService();
+            _coordinator = new ScanCoordinator();
+            _hotkeys = new HotkeyService();
+            _hotkeys.Pressed += () => _coordinator.StartScan();
+
+            _gesture = _settings.Load().ToGesture();
+
+            BuildTray();
+            RegisterHotkeyOrPrompt(_gesture);
         }
-
-        _settings = new SettingsStore();
-        _startup = new StartupService();
-        _coordinator = new ScanCoordinator();
-        _hotkeys = new HotkeyService();
-        _hotkeys.Pressed += () => _coordinator.StartScan();
-
-        _gesture = _settings.Load().ToGesture();
-
-        BuildTray();
-        RegisterHotkeyOrPrompt(_gesture);
+        catch (Exception ex)
+        {
+            LogCrash("Startup", ex);
+            MessageBox.Show(
+                $"QRule W failed to start:\n\n{ex.Message}\n\nDetails saved to:\n{CrashLogPath}",
+                Loc.AppName, MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown();
+        }
     }
 
     private void BuildTray()
     {
-        _tray = new TaskbarIcon
-        {
-            ToolTipText = Loc.AppName,
-            IconSource = new BitmapImage(new Uri("pack://application:,,,/Assets/qrule.ico")),
-        };
+        _tray = new TaskbarIcon { ToolTipText = Loc.AppName };
+        var icon = LoadTrayIcon();
+        if (icon is not null) _tray.IconSource = icon;
         _tray.TrayLeftMouseUp += (_, _) => _coordinator?.StartScan();
         _tray.ContextMenu = BuildMenu();
         _tray.ForceCreate();
+    }
+
+    /// <summary>
+    /// Loads the tray icon defensively. WPF's ICO decoder can reject some .ico layouts, so a failure
+    /// here must not take the whole app down — fall back to the exe's own embedded icon, then to none.
+    /// </summary>
+    private static BitmapSource? LoadTrayIcon()
+    {
+        try
+        {
+            return new BitmapImage(new Uri("pack://application:,,,/Assets/qrule.ico"));
+        }
+        catch (Exception ex)
+        {
+            LogCrash("TrayIcon(pack)", ex);
+        }
+
+        try
+        {
+            var exe = Environment.ProcessPath;
+            using var extracted = exe is null ? null : System.Drawing.Icon.ExtractAssociatedIcon(exe);
+            if (extracted is not null)
+            {
+                var source = Imaging.CreateBitmapSourceFromHIcon(
+                    extracted.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                source.Freeze();
+                return source;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogCrash("TrayIcon(exe)", ex);
+        }
+
+        return null; // tray still works, just without a custom glyph
+    }
+
+    private static string CrashLogPath => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QRuleW", "crash.log");
+
+    private static void LogCrash(string stage, Exception? ex)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(CrashLogPath)!);
+            File.AppendAllText(CrashLogPath,
+                $"[{DateTime.Now:o}] {stage}: {ex}{Environment.NewLine}{Environment.NewLine}");
+        }
+        catch
+        {
+            // Logging is best-effort; never let it throw.
+        }
     }
 
     private ContextMenu BuildMenu()
