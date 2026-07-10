@@ -34,8 +34,6 @@ echo "==> Publishing self-contained $RID"
 dotnet publish src/QRuleW/QRuleW.csproj \
   -c "$CONFIG" -r "$RID" --self-contained true \
   -p:PublishSingleFile=true \
-  -p:IncludeNativeLibrariesForSelfExtraction=true \
-  -p:EnableCompressionInSingleFile=true \
   -o "dist/$RID"
 
 echo ""

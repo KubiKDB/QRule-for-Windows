@@ -30,8 +30,6 @@ jobs:
           dotnet publish src/QRuleW/QRuleW.csproj
           -c Release -r win-x64 --self-contained true
           -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtraction=true
-          -p:EnableCompressionInSingleFile=true
           -o publish/x64
 
       - name: Publish win-arm64 (self-contained, single file)
@@ -39,8 +37,6 @@ jobs:
           dotnet publish src/QRuleW/QRuleW.csproj
           -c Release -r win-arm64 --self-contained true
           -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtraction=true
-          -p:EnableCompressionInSingleFile=true
           -o publish/arm64
 
       - name: Name the artifacts by architecture

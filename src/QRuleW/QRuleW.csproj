@@ -19,6 +19,19 @@
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
+  <!--
+    Single-file publish settings. WPF's native support DLLs (PresentationNative_cor3.dll,
+    wpfgfx_cor3.dll, PenImc_cor3.dll, …) are not found by WPF's loader when merely bundled for
+    self-extraction, which throws DllNotFoundException in HwndSubclass at first window creation.
+    IncludeAllContentForSelfExtract unpacks EVERYTHING to a temp folder before the app runs, so
+    native DLL probing works exactly as in a folder install. Compression is left off — it has been
+    a source of WPF native-load issues and the extract-all model already keeps it to one .exe.
+  -->
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.1" />

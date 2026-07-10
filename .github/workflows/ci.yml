@@ -28,5 +28,4 @@ jobs:
           dotnet publish src/QRuleW/QRuleW.csproj
           -c Release -r win-x64 --self-contained true
           -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtraction=true
           -o publish/x64
