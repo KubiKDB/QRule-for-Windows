@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build solution
+        run: dotnet build QRuleW.sln -c Release
+
+      - name: Run Core unit tests
+        run: dotnet test tests/QRuleW.Core.Tests/QRuleW.Core.Tests.csproj -c Release --no-build
+
+      - name: Smoke-publish win-x64
+        run: >
+          dotnet publish src/QRuleW/QRuleW.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtraction=true
+          -o publish/x64

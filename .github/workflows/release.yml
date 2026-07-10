@@ -1,0 +1,63 @@
+name: Release
+
+# Publishes ready-to-run Windows executables to a GitHub Release.
+# Trigger by pushing a version tag (e.g. `git tag v1.0.0 && git push origin v1.0.0`),
+# or run manually from the Actions tab.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create the release and upload assets
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Run Core unit tests
+        run: dotnet test tests/QRuleW.Core.Tests/QRuleW.Core.Tests.csproj -c Release
+
+      - name: Publish win-x64 (self-contained, single file)
+        run: >
+          dotnet publish src/QRuleW/QRuleW.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtraction=true
+          -p:EnableCompressionInSingleFile=true
+          -o publish/x64
+
+      - name: Publish win-arm64 (self-contained, single file)
+        run: >
+          dotnet publish src/QRuleW/QRuleW.csproj
+          -c Release -r win-arm64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtraction=true
+          -p:EnableCompressionInSingleFile=true
+          -o publish/arm64
+
+      - name: Name the artifacts by architecture
+        shell: pwsh
+        run: |
+          Copy-Item publish/x64/QRuleW.exe   QRuleW-win-x64.exe
+          Copy-Item publish/arm64/QRuleW.exe QRuleW-win-arm64.exe
+
+      - name: Create / update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = if ($env:GITHUB_REF -like 'refs/tags/*') { $env:GITHUB_REF -replace 'refs/tags/','' } else { "v0.0.0-dev" }
+          # Create the release if it doesn't exist yet (ignore error if it does), then upload/overwrite assets.
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "QRule W $tag" --notes "Download **QRuleW-win-x64.exe** (or **-arm64** for ARM PCs) and run it. No installer, no .NET required."
+          }
+          gh release upload $tag QRuleW-win-x64.exe QRuleW-win-arm64.exe --clobber

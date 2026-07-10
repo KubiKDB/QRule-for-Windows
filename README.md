@@ -9,6 +9,21 @@ and QRule decodes it locally and shows a small card with **Open / Copy / Share /
 CPU (nothing is monitored until you press the shortcut), no network, no telemetry, and the
 screenshot is never written to disk or transmitted.
 
+## Download & install
+
+No installer and no .NET runtime needed — it's a single self-contained executable.
+
+1. Go to the [**Releases**](../../releases/latest) page.
+2. Download **`QRuleW-win-x64.exe`** (or **`QRuleW-win-arm64.exe`** on an ARM PC).
+3. Double-click it. QRule W lives in the system tray — press **Ctrl+Shift+7** to scan.
+
+Because the exe isn't code-signed, Windows SmartScreen may show a "Windows protected your PC"
+prompt on first run — click **More info → Run anyway**. To launch automatically at login, use the
+tray menu's **Launch at Startup**.
+
+> Releases are produced automatically by GitHub Actions (`.github/workflows/release.yml`) on each
+> `v*` tag — the exe you download is built straight from this source on a clean Windows runner.
+
 ## How it works
 
 1. Global hotkey → one-time screenshot of **every** monitor (GDI `CopyFromScreen`).
