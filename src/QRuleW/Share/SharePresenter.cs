@@ -33,9 +33,10 @@ public sealed class SharePresenter
     private const string DataTransferManagerClassName =
         "Windows.ApplicationModel.DataTransfer.DataTransferManager";
 
-    // IDataTransferManagerInterop is IInspectable-based: 3 IUnknown + 3 IInspectable slots precede it.
-    private const int VtblGetForWindow = 6;
-    private const int VtblShowShareUIForWindow = 7;
+    // IDataTransferManagerInterop derives from IUnknown (NOT IInspectable), so only the 3 IUnknown
+    // slots (QueryInterface/AddRef/Release) precede its two methods.
+    private const int VtblGetForWindow = 3;
+    private const int VtblShowShareUIForWindow = 4;
 
     /// <summary>Presents the share UI anchored to <paramref name="hwnd"/>.</summary>
     public unsafe void Show(IntPtr hwnd, ScanResult result)
