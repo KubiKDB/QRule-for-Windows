@@ -59,9 +59,13 @@ public sealed class SharePresenter
             var dtmIid = DataTransferManagerIid;
             IntPtr managerAbi;
             Marshal.ThrowExceptionForHR(getForWindow(interop, hwnd, &dtmIid, &managerAbi));
-            Diagnostics.Log("Share.Show: got DataTransferManager");
 
-            var manager = MarshalInterface<DataTransferManager>.FromAbi(managerAbi);
+            // DataTransferManager is a WinRT runtime class (IInspectable), so it must be wrapped with
+            // MarshalInspectable, not MarshalInterface — the latter yields a broken object.
+            var manager = MarshalInspectable<DataTransferManager>.FromAbi(managerAbi);
+            if (managerAbi != IntPtr.Zero) Marshal.Release(managerAbi); // FromAbi took its own ref
+            Diagnostics.Log($"Share.Show: got DataTransferManager (null={manager is null})");
+            if (manager is null) return;
 
             TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler = null!;
             handler = (_, args) =>
