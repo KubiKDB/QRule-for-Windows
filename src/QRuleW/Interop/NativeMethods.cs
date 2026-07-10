@@ -71,6 +71,9 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     public static extern bool GetCursorPos(out POINT lpPoint);
 
+    [DllImport("user32.dll")]
+    public static extern bool SetForegroundWindow(IntPtr hWnd);
+
     // ---- App packaging detection (StartupTask vs Run key) ----
     public const int APPMODEL_ERROR_NO_PACKAGE = 15700;
 

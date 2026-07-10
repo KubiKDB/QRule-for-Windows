@@ -23,30 +23,44 @@ public sealed class SharePresenter
     public void Show(IntPtr hwnd, ScanResult result)
     {
         var interop = DataTransferManager.As<NativeMethods.IDataTransferManagerInterop>();
+        Diagnostics.Log("Share.Show: got interop");
+
         var iid = DataTransferManagerIid;
         var abi = interop.GetForWindow(hwnd, ref iid);
         var manager = MarshalInterface<DataTransferManager>.FromAbi(abi);
+        Diagnostics.Log("Share.Show: got DataTransferManager");
 
         TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler = null!;
         handler = (_, args) =>
         {
-            var data = args.Request.Data;
-            data.Properties.Title = Loc.AppName;
-
-            if (result.OpenableUrl is not null)
+            try
             {
-                data.Properties.Title = result.OpenableUrl.ToString();
-                data.SetWebLink(result.OpenableUrl);   // share URLs as a web link
-            }
-            else
-            {
-                data.SetText(result.Payload);          // everything else as plain text
-            }
+                var data = args.Request.Data;
+                data.Properties.Title = Loc.AppName;
 
-            manager.DataRequested -= handler;
+                if (result.OpenableUrl is not null)
+                {
+                    data.Properties.Title = result.OpenableUrl.ToString();
+                    data.SetWebLink(result.OpenableUrl);   // share URLs as a web link
+                }
+                else
+                {
+                    data.SetText(result.Payload);          // everything else as plain text
+                }
+                Diagnostics.Log("Share.Show: DataRequested populated");
+            }
+            catch (Exception ex)
+            {
+                Diagnostics.Log("Share.Show: DataRequested handler failed", ex);
+            }
+            finally
+            {
+                manager.DataRequested -= handler;
+            }
         };
 
         manager.DataRequested += handler;
         interop.ShowShareUIForWindow(hwnd);
+        Diagnostics.Log("Share.Show: ShowShareUIForWindow called");
     }
 }

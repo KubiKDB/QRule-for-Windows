@@ -1,4 +1,3 @@
-using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -116,22 +115,9 @@ public partial class App : Application
         return null; // tray still works, just without a custom glyph
     }
 
-    private static string CrashLogPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QRuleW", "crash.log");
+    private static string CrashLogPath => Diagnostics.LogPath;
 
-    private static void LogCrash(string stage, Exception? ex)
-    {
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(CrashLogPath)!);
-            File.AppendAllText(CrashLogPath,
-                $"[{DateTime.Now:o}] {stage}: {ex}{Environment.NewLine}{Environment.NewLine}");
-        }
-        catch
-        {
-            // Logging is best-effort; never let it throw.
-        }
-    }
+    private static void LogCrash(string stage, Exception? ex) => Diagnostics.Log(stage, ex);
 
     private ContextMenu BuildMenu()
     {

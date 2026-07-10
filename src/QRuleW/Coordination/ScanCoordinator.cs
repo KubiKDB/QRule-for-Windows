@@ -122,19 +122,25 @@ public sealed class ScanCoordinator
     {
         if (_card is null || _cardResult is null) return;
 
-        // Pitfall #2: the share sheet renders below topmost overlays. Close the overlays and drop
-        // the card out of the topmost band before invoking it, so the sheet is visible and clickable.
+        // Pitfall #2: the share sheet renders below topmost overlays and needs its anchor window to be
+        // the foreground window. Close the overlays, drop the card out of the topmost band, and force
+        // the card to the foreground before invoking the sheet, so it is visible and clickable.
         CloseOverlays();
         _card.DropTopmost();
+        _card.Activate();
 
         var hwnd = new WindowInteropHelper(_card).Handle;
+        Interop.NativeMethods.SetForegroundWindow(hwnd);
+
         try
         {
+            Diagnostics.Log($"Share: invoking for hwnd={hwnd}");
             _share.Show(hwnd, _cardResult);
         }
-        catch
+        catch (Exception ex)
         {
             // If the share sheet can't be shown, leave the card up so the user can still Copy/Open.
+            Diagnostics.Log("Share: failed", ex);
         }
     }
 
