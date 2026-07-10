@@ -17,6 +17,7 @@
     <Company>Daniel Bond</Company>
     <Copyright>Copyright © 2026 Daniel Bond. All rights reserved.</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <!--
