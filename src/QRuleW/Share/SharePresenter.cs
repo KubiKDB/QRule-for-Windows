@@ -58,12 +58,15 @@ public sealed class SharePresenter
                 (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, Guid*, IntPtr*, int>)vtbl[VtblGetForWindow];
             var dtmIid = DataTransferManagerIid;
             IntPtr managerAbi;
-            Marshal.ThrowExceptionForHR(getForWindow(interop, hwnd, &dtmIid, &managerAbi));
+            int hr = getForWindow(interop, hwnd, &dtmIid, &managerAbi);
+            Diagnostics.Log($"Share.Show: GetForWindow hr=0x{hr:X8} abi=0x{managerAbi.ToInt64():X}");
+            Marshal.ThrowExceptionForHR(hr);
+            if (managerAbi == IntPtr.Zero) { Diagnostics.Log("Share.Show: GetForWindow returned null abi"); return; }
 
             // DataTransferManager is a WinRT runtime class (IInspectable), so it must be wrapped with
             // MarshalInspectable, not MarshalInterface — the latter yields a broken object.
             var manager = MarshalInspectable<DataTransferManager>.FromAbi(managerAbi);
-            if (managerAbi != IntPtr.Zero) Marshal.Release(managerAbi); // FromAbi took its own ref
+            Marshal.Release(managerAbi); // FromAbi holds its own ref when it materializes
             Diagnostics.Log($"Share.Show: got DataTransferManager (null={manager is null})");
             if (manager is null) return;
 
